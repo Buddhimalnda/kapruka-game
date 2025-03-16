@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_cors import CORS  # Import CORS
+from flask_caching import Cache
+
 import random
 import os
 import json
@@ -12,6 +14,7 @@ CORS(app)
 # Keep track of registered players
 registered_players = {}
 
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 # Game state
 game_state = {
     'score': 0,
@@ -55,6 +58,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/static/<path:path>')
+@cache.cached(timeout=3600)
 def send_static(path):
     return send_from_directory('static', path)
 
