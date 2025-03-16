@@ -1,13 +1,14 @@
 from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask_cors import CORS  # Import CORS
 import random
 import os
 import json
 import time
 import uuid
-
 app = Flask(__name__)
 app.config['STATIC_FOLDER'] = 'static'
-
+# Enable CORS for all routes and origins
+CORS(app)
 # Keep track of registered players
 registered_players = {}
 
