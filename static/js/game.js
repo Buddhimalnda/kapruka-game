@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (updateInterval) {
                 clearInterval(updateInterval);
             }
-            updateInterval = setInterval(updateGame, 1000 / 10); // 60 FPS
+            updateInterval = setInterval(updateGame, 1000 / 60); // 60 FPS
             
             // Hide game over screen
             gameOverScreen.style.display = 'none';
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (updateInterval) {
                 clearInterval(updateInterval);
             }
-            updateInterval = setInterval(updateGame, 1000 / 10); // 60 FPS
+            updateInterval = setInterval(updateGame, 1000 / 60); // 60 FPS
         });
     }
     
@@ -769,17 +769,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch(error => console.error('Error sending game over:', error));
     }
     
-    // Add these variables at the top of your script
-    let lastUpdateTime = 0;
-    const UPDATE_THROTTLE = 1000; // milliseconds between updates
     // Update game state
     function updateGame() {
         if (gameOver) return;
-        const now = Date.now();
-        if (now - lastUpdateTime < UPDATE_THROTTLE) {
-            return; // Skip this update cycle
-        }
-        lastUpdateTime = now;
+        
         fetch('/api/update-game', {
             method: 'POST',
             headers: {
@@ -836,84 +829,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error updating game state:', error));
     }
-    // Add this variable near your other game state variables
-
-// Then modify your updateGame function
-// function updateGame() {
-//     if (gameOver) return;
-    
-//     // Add throttling to prevent too many requests
-    // const now = Date.now();
-    // if (now - lastUpdateTime < UPDATE_THROTTLE) {
-    //     return; // Skip this update cycle
-    // }
-    // lastUpdateTime = now;
-    
-//     fetch('/api/update-game', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             username: username,
-//             uniqueId: playerUniqueId
-//         })
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error(`Server responded with ${response.status}`);
-//         }
-//         return response.json();
-//     })
-//     .then(data => {
-//         // Update game state
-//         score = data.score;
-//         updateScore();
-        
-//         // Update blocks that aren't being dragged
-//         data.blocks.forEach(serverBlock => {
-//             // Skip updating blocks that are being dragged locally
-//             const existingBlock = blocks.find(b => b.id === serverBlock.id);
-//             if (!existingBlock || !existingBlock.dragging) {
-//                 const blockIndex = blocks.findIndex(b => b.id === serverBlock.id);
-//                 if (blockIndex >= 0) {
-//                     blocks[blockIndex] = serverBlock;
-//                 } else {
-//                     blocks.push(serverBlock);
-//                 }
-//                 renderBlock(serverBlock);
-//             }
-//         });
-        
-//         // Remove blocks that are no longer in the game
-//         blocks = blocks.filter(block => {
-//             if (!data.blocks.some(serverBlock => serverBlock.id === block.id) && !block.dragging) {
-//                 const element = document.getElementById(block.id);
-//                 if (element) element.remove();
-//                 return false;
-//             }
-//             return true;
-//         });
-        
-//         // Handle animations
-//         data.animations.forEach(animation => {
-//             if (!animations.some(a => a.id === animation.id)) {
-//                 animations.push(animation);
-//                 createExplosion(animation.x, animation.y, animation.is_final);
-//             }
-//         });
-        
-//         // Check game over state
-//         if (data.game_over && !gameOver) {
-//             endGame(false);
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error updating game state:', error);
-//         // Add a short timeout before retrying to give server time to recover
-//         setTimeout(updateGame, 1000);
-//     });
-// }
     
     // Update bucket positions on window resize
     window.addEventListener('resize', function() {
